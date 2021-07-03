@@ -2,7 +2,7 @@ import { FunctionComponent, memo, useCallback } from 'react'
 import Link from 'next/link'
 import classnames from 'classnames'
 import { ipc } from '@/ipc/renderer'
-import styles from '@/components/HeaderMenu.module.sass'
+import styles from '@/components/global/HeaderMenu.module.sass'
 
 interface HeaderMenuProps {
   currentPath: string

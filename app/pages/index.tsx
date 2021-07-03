@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { memo, useCallback, useState } from 'react'
-import { VideoList } from '@/components/VideoList'
+import { VideoList } from '@/components/pages/index/VideoList'
 import styles from '@/assets/styles/pages/index.module.sass'
 
 const Home: NextPage = memo(() => {

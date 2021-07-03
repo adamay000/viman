@@ -3,10 +3,10 @@ import { FunctionComponent, memo, useCallback, useEffect, useState, useMemo } fr
 import { AutoSizer, Grid, GridCellRenderer } from 'react-virtualized'
 import { RequestChannel } from '@/ipc/channel'
 import { CancellableRequest, ipc } from '@/ipc/renderer'
-import { Thumbnail } from '@/components/Thumbnail'
+import { Thumbnail } from '@/components/pages/index/Thumbnail'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/constants'
 import { noop } from '@/utilities/noop'
-import styles from '@/components/VideoList.module.sass'
+import styles from '@/components/pages/index/VideoList.module.sass'
 
 interface VideoListProps {
   column: number

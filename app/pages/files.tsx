@@ -1,7 +1,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { memo, useCallback, useState } from 'react'
-import { FileList } from '@/components/FileList'
+import { FileList } from '@/components/pages/files/FileList'
 import styles from '@/assets/styles/pages/files.module.sass'
 
 const Files: NextPage = memo(() => {
