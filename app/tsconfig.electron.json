@@ -1,0 +1,27 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "../.electron",
+    "module": "commonjs",
+    "isolatedModules": false,
+    "useDefineForClassFields": false,
+    "target": "es6",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
+    "plugins": [
+      { "transform": "@zerollup/ts-transform-paths" }
+    ]
+  },
+  "include": [
+    "@types/*",
+    "main.ts",
+    "preload.ts",
+    "preload.dev.ts",
+    "service/migrations/*"
+  ]
+}

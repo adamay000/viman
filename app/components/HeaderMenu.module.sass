@@ -1,0 +1,27 @@
+.c-header-menu
+  background: $color-secondary-background
+  & > .left
+    @extend %button-wrapper
+    float: left
+    & > .button
+      border-right: 1px solid $color-primary-border
+  & > .right
+    @extend %button-wrapper
+    float: right
+    & > .button
+      border-left: 1px solid $color-primary-border
+%button-wrapper
+  font-size: $text-small
+  & > .button
+    display: inline-block
+    cursor: pointer
+    padding: 6px 12px
+    background: transparent
+    text-decoration: none
+    color: $color-primary-text
+    transition: background-color 60ms ease-in-out
+  & > .button.-active
+    text-decoration: underline
+  & > .button:hover
+    background: rgba(#ffffff, 0.3)
+

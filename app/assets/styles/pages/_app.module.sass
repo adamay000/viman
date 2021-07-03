@@ -1,0 +1,25 @@
+.main-app
+  display: flex
+  flex-direction: column
+  position: relative
+  width: 100vw
+  height: 100vh
+  &.-dropping::before
+    content: ''
+    pointer-events: none
+    position: absolute
+    z-index: 9999
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    background: $color-drop-background
+    border: 6px solid $color-drop-border
+    filter: blur(6px)
+  & > .header
+    border-bottom: 1px solid $color-primary-border
+  & > .body
+    flex-grow: 1
+    overflow: auto
+  & > .footer
+    border-top: 1px solid $color-primary-border

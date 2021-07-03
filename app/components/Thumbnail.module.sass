@@ -1,0 +1,22 @@
+.c-thumbnail
+  display: inline-block
+  overflow: hidden
+  position: relative
+  & > .image
+    background-repeat: no-repeat
+    transform-origin: 0 0
+  & > .time
+    position: absolute
+    right: 0
+    bottom: 0
+    padding: 2px 4px
+    background: $color-video-time-background
+    line-height: 1
+    font-size: $text-min
+    color: $color-video-time-text
+  & > .seek
+    position: absolute
+    bottom: 0
+    left: 0
+    height: 2px
+    background: $color-video-seek

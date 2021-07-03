@@ -1,0 +1,127 @@
+{
+  "name": "viman",
+  "version": "1.0.0",
+  "description": "Video Manager application.",
+  "engines": {
+    "node": ">=14.14 < 16"
+  },
+  "scripts": {
+    "postinstall": "simple-git-hooks",
+    "dev": "yarn dev:next",
+    "dev:next": "next app",
+    "dev:electron": "ttsc -p app/tsconfig.electron.json && electron .electron/main.js",
+    "prebuild": "rimraf build release && mkdir build",
+    "build": "yarn build:next && yarn build:electron",
+    "prebuild:next": "rimraf .next out",
+    "build:next": "next build app && next export && mkdirp build && mv out/* build",
+    "postbuild:next": "rimraf .next out",
+    "prebuild:electron": "ttsc -p app/tsconfig.electron.json --outDir build && node tools/build/create-package-json.js",
+    "build:electron": "electron-builder build --win --mac --x64",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "reset": "rimraf .electron",
+    "debug:database": "sqlite3 .electron/.sqlite",
+    "lint": "yarn lint:css && yarn lint:js",
+    "lint:css": "stylelint -f verbose 'app/**/*.sass'",
+    "lint:js": "eslint --ext .ts,.tsx app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.github.adamay000.viman",
+    "productName": "viman",
+    "directories": {
+      "app": "build",
+      "output": "release"
+    },
+    "mac": {
+      "target": "dmg",
+      "extraResources": [
+        {
+          "from": "node_modules/ffmpeg-static/bin/darwin/x64"
+        },
+        {
+          "from": "node_modules/ffprobe-static/bin/darwin/x64"
+        }
+      ]
+    },
+    "win": {
+      "target": "portable",
+      "asar": true,
+      "extraResources": [
+        {
+          "from": "node_modules/ffmpeg-static/bin/win32/x64"
+        },
+        {
+          "from": "node_modules/ffprobe-static/bin/win32/x64"
+        }
+      ]
+    }
+  },
+  "author": "adamay000",
+  "license": "MIT",
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": "yarn lint:js",
+    "*.{sass}": "yarn lint:css"
+  },
+  "dependencies": {
+    "classnames": "^2.3.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-window-state": "^5.0.3",
+    "eventemitter3": "^4.0.0",
+    "ffmpeg-static": "^3.0.0",
+    "ffprobe-static": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "is-electron": "^2.2.0",
+    "jimp": "^0.16.1",
+    "knex": "^0.20.6",
+    "lodash": "^4.17.15",
+    "next": "^10.2.3",
+    "objection": "^2.0.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-virtualized": "^9.22.3",
+    "reset-css": "^5.0.1",
+    "rimraf": "^3.0.2",
+    "sqlite3": "^4.1.1",
+    "stylelint-order": "^4.1.0",
+    "url-join": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/ffprobe-static": "^2.0.0",
+    "@types/fluent-ffmpeg": "^2.1.13",
+    "@types/jest": "^24.0.25",
+    "@types/lodash": "^4.14.149",
+    "@types/mkdirp": "^1.0.1",
+    "@types/node": "^14.14",
+    "@types/react": "^17.0.2",
+    "@types/react-virtualized": "^9.21.11",
+    "@types/rimraf": "^3.0.0",
+    "@types/url-join": "^4.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "@zerollup/ts-transform-paths": "^1.7.9",
+    "devtron": "^1.4.0",
+    "dts-css-modules-loader": "^1.2.2",
+    "electron": "^7.1.7",
+    "electron-builder": "^22.11.7",
+    "electron-rebuild": "^1.8.8",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "fork-ts-checker-webpack-plugin": "^6.2.10",
+    "jest": "^24.9.0",
+    "lint-staged": "^9.5.0",
+    "prettier": "^2.3.1",
+    "sass": "^1.35.1",
+    "simple-git-hooks": "^2.5.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-recommended": "^5.0.0",
+    "stylelint-rscss": "^0.4.0",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.3.2"
+  }
+}
