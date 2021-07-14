@@ -2,7 +2,7 @@ import { JSONSchema, Model } from 'objection'
 import { Item } from '@/service/models/Item'
 
 export class VideoItem extends Model {
-  public readonly item_id!: string
+  public readonly item_id!: number
   public readonly duration!: number
   public readonly thumbnail_timestamps!: string
 
@@ -31,7 +31,8 @@ export class VideoItem extends Model {
       required: ['item_id', 'duration', 'thumbnail_timestamps'],
       properties: {
         item_id: {
-          type: 'string'
+          type: 'number',
+          minimum: 0
         },
         duration: {
           type: 'number'

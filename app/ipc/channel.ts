@@ -62,7 +62,7 @@ export type RequestChannel = RequestEnvelope<{
     request: void
     response: {
       videos: Array<{
-        id: string
+        id: number
         path: string
         size: number
         duration: number

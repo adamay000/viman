@@ -2,8 +2,11 @@ import { BrowserWindow, WebContents, protocol } from 'electron'
 import isDev from 'electron-is-dev'
 import windowStateKeeper from 'electron-window-state'
 import { resolve } from 'path'
+import { access } from 'fs'
+import { promisify } from 'util'
 import remove from 'lodash/remove'
 import urljoin from 'url-join'
+import { Item } from '@/service/models/Item'
 import { PATH_VIDEO_THUMBNAIL } from '@/paths'
 
 export class App {
@@ -44,11 +47,36 @@ export class App {
     })
 
     // Make it able to access images via original protocol such as thumbnail://
-    protocol.registerFileProtocol('thumbnail', (request, callback) => {
-      const url = decodeURIComponent(request.url).substr(12)
-      callback({
-        path: resolve(PATH_VIDEO_THUMBNAIL, `${url}.png`)
-      })
+    protocol.registerFileProtocol('thumbnail', async (request, callback) => {
+      // Allow only integer for security reason.
+      const id = parseInt(decodeURIComponent(request.url).substr(12), 10)
+      if (Number.isNaN(id)) {
+        callback()
+        return
+      }
+
+      const path = resolve(PATH_VIDEO_THUMBNAIL, `${id}.png`)
+      try {
+        await promisify(access)(path)
+        callback({
+          path: resolve(PATH_VIDEO_THUMBNAIL, `${id}.png`)
+        })
+        return
+      } catch (exception) {
+        // Backwards compatibility with version 1.0.0.
+        // Thumbnail created with above, filename is like '{size}-{filename}.png'.
+        const item = await Item.query().where({ id }).first()
+        if (!item) {
+          callback()
+          return
+        }
+
+        const filename = `${item.size}-${item.filename}.png`
+
+        callback({
+          path: resolve(PATH_VIDEO_THUMBNAIL, filename)
+        })
+      }
     })
 
     this.created()

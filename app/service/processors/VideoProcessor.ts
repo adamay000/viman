@@ -46,7 +46,7 @@ export class VideoProcessor extends Processor {
     const { resizedWidth, resizedHeight } = getResizedSize(width, height)
     const size = `${resizedWidth}x${resizedHeight}`
 
-    const temporallyDir = resolve(PATH_VIDEO_THUMBNAIL, id)
+    const temporallyDir = resolve(PATH_VIDEO_THUMBNAIL, `${id}`)
     const thumbnailDir = PATH_VIDEO_THUMBNAIL
     const thumbnailFile = resolve(thumbnailDir, `${id}.png`)
     const interval = duration < 100 ? 1 : duration < 200 ? 2 : duration < 300 ? 3 : duration < 600 ? 5 : 10
@@ -101,7 +101,7 @@ export class VideoProcessor extends Processor {
 
   private async saveThumbnails(
     resizedFile: string,
-    id: string,
+    id: number,
     thumbnailDir: string,
     timestamps: Array<number>,
     size: string,
@@ -143,7 +143,7 @@ export class VideoProcessor extends Processor {
     temporallyDir: string,
     thumbnailFile: string,
     width: number,
-    id: string,
+    id: number,
     startTime: number
   ) {
     const files = (await promisify(readdir)(temporallyDir))

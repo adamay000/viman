@@ -21,14 +21,14 @@ export class FilesHandler extends Handler<'files'> {
   }
 
   private async addItem(path: string, size: number) {
-    const id = Item.generateId(path, size)
-    ;(await Item.query().where('id', id).first()) ||
+    const filename = basename(path)
+    const extension = extname(path)
+    ;(await Item.query().where({ filename, size }).first()) ||
       (await Item.query().insertAndFetch({
-        id,
         path,
-        filename: basename(path),
-        extension: extname(path),
-        size: size
+        filename,
+        extension,
+        size
       }))
   }
 }

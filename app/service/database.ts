@@ -13,8 +13,12 @@ export async function initializeDatabase() {
     useNullAsDefault: true,
     connection: sqliteConfig
   })
+
   await knex.migrate.latest({
     directory: resolve(__dirname, './migrations')
   })
+
+  await knex.raw('PRAGMA foreign_keys = ON')
+
   Model.knex(knex)
 }
