@@ -2,7 +2,21 @@ import Knex from 'knex'
 import { ItemStatus } from '@/service/models/Item'
 
 export const up = async (knex: Knex) => {
+  await knex.raw('PRAGMA foreign_keys = ON')
+
   await upModifyOldTables(knex)
+
+  await knex.schema.createTable('tags', (table) => {
+    table.increments('id').primary()
+    table.string('name', 256).unique().notNullable()
+  })
+
+  await knex.schema.createTable('item_tags', (table) => {
+    table.increments('id').primary()
+    table.integer('item_id').references('items.id').onDelete('cascade').notNullable()
+    table.integer('tag_id').references('tags.id').onDelete('restrict').notNullable()
+    table.unique(['item_id', 'tag_id'])
+  })
 }
 
 export const down = () => {
