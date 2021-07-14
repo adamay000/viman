@@ -8,6 +8,8 @@ import { NewWindowHandler } from '@/service/handlers/NewWindowHandler'
 import { ConsoleHistoryHandler } from '@/service/handlers/request/ConsoleHistoryHandler'
 import { ItemsHandler } from '@/service/handlers/request/ItemsHandler'
 import { VideosHandler } from '@/service/handlers/request/VideosHandler'
+import { AddTagHandler } from '@/service/handlers/request/AddTagHandler'
+import { RemoveTagHandler } from '@/service/handlers/request/RemoveTagHandler'
 
 export function initializeHandler() {
   addHandler('files', new FilesHandler())
@@ -17,19 +19,26 @@ export function initializeHandler() {
   addRequestHandler('consoleHistory', new ConsoleHistoryHandler())
   addRequestHandler('items', new ItemsHandler())
   addRequestHandler('videos', new VideosHandler())
+  addRequestHandler('addTag', new AddTagHandler())
+  addRequestHandler('removeTag', new RemoveTagHandler())
 }
 
 function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: Handler<T>) {
-  ipc.on(channel, (event, requestId, payload) => {
+  ipc.on(channel, async (event, requestId, payload) => {
     console.log(`Got request for '${channel}'. requestId is ${requestId}`)
-    handler.request(
-      {
-        event,
-        requestId,
-        app: App.findByWindow(event.sender)
-      },
-      payload
-    )
+    try {
+      await handler.request(
+        {
+          event,
+          requestId,
+          app: App.findByWindow(event.sender)
+        },
+        payload
+      )
+    } catch (exception) {
+      // TODO handle request error
+      console.error(exception)
+    }
   })
 }
 

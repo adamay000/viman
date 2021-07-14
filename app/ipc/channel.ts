@@ -70,4 +70,28 @@ export type RequestChannel = RequestEnvelope<{
       }>
     }
   }
+  addTag: {
+    request: {
+      itemId: number
+      tagName: string
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
+  removeTag: {
+    request: {
+      itemId: number
+      tagId: number
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
 }>
