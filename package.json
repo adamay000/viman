@@ -75,7 +75,7 @@
     "fluent-ffmpeg": "^2.1.2",
     "is-electron": "^2.2.0",
     "jimp": "^0.16.1",
-    "knex": "^0.20.6",
+    "knex": "^0.21.19",
     "lodash": "^4.17.15",
     "next": "^10.2.3",
     "objection": "^2.0.10",
