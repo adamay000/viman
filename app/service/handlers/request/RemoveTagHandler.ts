@@ -2,6 +2,7 @@ import { Handler, HandlerContext } from '@/service/handlers/Handler'
 import { RequestChannel } from '@/ipc/channel'
 import { ItemTag } from '@/service/models/ItemTag'
 import { Tag } from '@/service/models/Tag'
+import { handleCommonErrors } from '@/service/handlers/error'
 
 export class RemoveTagHandler extends Handler<'removeTag'> {
   public async request(_context: HandlerContext, payload: RequestChannel['removeTag']['request']) {
@@ -17,6 +18,9 @@ export class RemoveTagHandler extends Handler<'removeTag'> {
       const tags = await ItemTag.query(trx).where({ item_id: payload.itemId }).withGraphFetched('tag')
 
       return { tags }
+    }).catch((exception) => {
+      handleCommonErrors(exception)
+      throw exception
     })
 
     return {

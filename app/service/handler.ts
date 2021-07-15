@@ -1,4 +1,5 @@
 import { RendererToMainChannel, RequestChannel } from '@/ipc/channel'
+import { RequestError } from '@/ipc/RequestError'
 import { ipc } from '@/ipc/main'
 import { App } from '@/service/index'
 import { Handler } from '@/service/handlers/Handler'
@@ -36,7 +37,6 @@ function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: 
         payload
       )
     } catch (exception) {
-      // TODO handle request error
       console.error(exception)
     }
   })
@@ -44,19 +44,34 @@ function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: 
 
 function addRequestHandler<T extends keyof RequestChannel>(channel: T, handler: Handler<T>) {
   ipc.on(channel, async (event, requestId, payload) => {
-    const response = await handler.request(
-      {
-        event,
-        requestId,
-        app: App.findByWindow(event.sender)
-      },
-      payload
-    )
-
     try {
+      const response = await handler.request(
+        {
+          event,
+          requestId,
+          app: App.findByWindow(event.sender)
+        },
+        payload
+      )
       ipc.respond(event.sender, channel, requestId, response)
     } catch (exception) {
       console.error(exception)
+
+      if (RequestError.isRequestError(exception)) {
+        ipc.respondError(event.sender, channel, requestId, exception)
+        return
+      }
+
+      ipc.respondError(
+        event.sender,
+        channel,
+        requestId,
+        RequestError.createError({
+          code: RequestError.Code.Unknown,
+          message: exception.message,
+          detail: null
+        })
+      )
     }
   })
 }
