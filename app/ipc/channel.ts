@@ -105,4 +105,18 @@ export type RequestChannel = RequestEnvelope<{
       }>
     }
   }
+  tagSuggestions: {
+    request: {
+      itemId: number
+      tagName: string
+      limit?: number
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+        count: number
+      }>
+    }
+  }
 }>

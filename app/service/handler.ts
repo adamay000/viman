@@ -12,6 +12,7 @@ import { VideosHandler } from '@/service/handlers/request/VideosHandler'
 import { GetTagsHandler } from '@/service/handlers/request/GetTagsHandler'
 import { AddTagHandler } from '@/service/handlers/request/AddTagHandler'
 import { RemoveTagHandler } from '@/service/handlers/request/RemoveTagHandler'
+import { TagSuggestionsHandler } from '@/service/handlers/request/TagSuggestionsHandler'
 
 export function initializeHandler() {
   addHandler('files', new FilesHandler())
@@ -24,6 +25,7 @@ export function initializeHandler() {
   addRequestHandler('getTags', new GetTagsHandler())
   addRequestHandler('addTag', new AddTagHandler())
   addRequestHandler('removeTag', new RemoveTagHandler())
+  addRequestHandler('tagSuggestions', new TagSuggestionsHandler())
 }
 
 function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: Handler<T>) {

@@ -111,7 +111,7 @@ export const VideoCell: FunctionComponent<VideoCellProps> = memo(
       <div className={styles.cVideoCell} onClick={openApplication} onContextMenu={showDetail}>
         {isShowDetail && (
           <div className={styles.details}>
-            <TagInput ref={tagInputRef} onSubmit={addTag} disabled={isUpdatingTag} />
+            <TagInput ref={tagInputRef} itemId={id} onSubmit={addTag} disabled={isUpdatingTag} />
             <div>
               {tags.map((tag) => (
                 <div key={tag.tagId}>
