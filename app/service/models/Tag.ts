@@ -1,5 +1,5 @@
 import { JSONSchema, Model } from 'objection'
-import { Item } from '@/service/models/Item'
+import { ItemTag } from '@/service/models/ItemTag'
 
 export class Tag extends Model {
   public readonly id!: number
@@ -11,12 +11,12 @@ export class Tag extends Model {
 
   public static override get relationMappings() {
     return {
-      item: {
-        relation: Model.ManyToManyRelation,
-        modelClass: Item,
+      itemTag: {
+        relation: Model.HasManyRelation,
+        modelClass: ItemTag,
         join: {
-          from: `${Tag.tableName}.item_id`,
-          to: `${Item.tableName}.id`
+          from: `${Tag.tableName}.id`,
+          to: `${ItemTag.tableName}.tag_id`
         }
       }
     }
