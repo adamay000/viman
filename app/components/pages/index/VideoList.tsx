@@ -1,9 +1,8 @@
-import { shell } from 'electron'
-import { FunctionComponent, memo, useCallback, useEffect, useState, useMemo } from 'react'
+import { FunctionComponent, memo, useEffect, useState, useMemo } from 'react'
 import { AutoSizer, Grid, GridCellRenderer } from 'react-virtualized'
 import { RequestChannel } from '@/ipc/channel'
 import { CancellableRequest, ipc } from '@/ipc/renderer'
-import { Thumbnail } from '@/components/pages/index/Thumbnail'
+import { VideoCell } from '@/components/pages/index/VideoCell'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/constants'
 import { noop } from '@/utilities/noop'
 import styles from '@/components/pages/index/VideoList.module.sass'
@@ -49,8 +48,6 @@ export const VideoList: FunctionComponent<VideoListProps> = memo(({ column, filt
     [videos.length, filter]
   )
 
-  const openApplication = useCallback((path: string) => shell.openItem(path), [])
-
   const $videoGrid = (
     <AutoSizer>
       {({ width, height }) => {
@@ -73,9 +70,10 @@ export const VideoList: FunctionComponent<VideoListProps> = memo(({ column, filt
                 const video = filteredVideos[index]
                 if (!video) return null
                 return (
-                  <div key={video.path + index} style={style} onClick={() => openApplication(video.path)}>
-                    <Thumbnail
-                      path={`thumbnail://${video.id}`}
+                  <div key={video.id} style={style}>
+                    <VideoCell
+                      id={video.id}
+                      path={video.path}
                       width={thumbnailWidth}
                       height={thumbnailHeight}
                       timestamps={video.thumbnailTimestamps}
