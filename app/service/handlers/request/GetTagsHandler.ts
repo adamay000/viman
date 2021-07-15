@@ -5,19 +5,18 @@ import { handleCommonErrors } from '@/service/handlers/error'
 
 export class GetTagsHandler extends Handler<'getTags'> {
   public async request(_context: HandlerContext, payload: RequestChannel['getTags']['request']) {
-    const tags = await ItemTag.query()
+    const tags = (await ItemTag.query()
       .where({ item_id: payload.itemId })
       .withGraphFetched('tag')
       .catch((exception) => {
         handleCommonErrors(exception)
         throw exception
-      })
+      })) as Array<WithRelation<ItemTag, 'tag'>>
 
     return {
       tags: tags.map((tag) => ({
         tagId: tag.tag_id,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tagName: tag.tag!.name
+        tagName: tag.tag.name
       }))
     }
   }

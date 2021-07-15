@@ -16,7 +16,9 @@ export class AddTagHandler extends Handler<'addTag'> {
         tag_id: tag.id
       })
 
-      const tags = await ItemTag.query(trx).where({ item_id: payload.itemId }).withGraphFetched('tag')
+      const tags = (await ItemTag.query(trx).where({ item_id: payload.itemId }).withGraphFetched('tag')) as Array<
+        WithRelation<ItemTag, 'tag'>
+      >
 
       return { tag, itemTag, tags }
     }).catch((exception) => {
@@ -30,8 +32,7 @@ export class AddTagHandler extends Handler<'addTag'> {
     return {
       tags: tags.map((tag) => ({
         tagId: tag.tag_id,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tagName: tag.tag!.name
+        tagName: tag.tag.name
       })),
       suggestions: []
     }

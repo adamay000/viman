@@ -15,7 +15,9 @@ export class RemoveTagHandler extends Handler<'removeTag'> {
         await Tag.query(trx).delete().where({ id: payload.tagId })
       }
 
-      const tags = await ItemTag.query(trx).where({ item_id: payload.itemId }).withGraphFetched('tag')
+      const tags = (await ItemTag.query(trx).where({ item_id: payload.itemId }).withGraphFetched('tag')) as Array<
+        WithRelation<ItemTag, 'tag'>
+      >
 
       return { tags }
     }).catch((exception) => {
@@ -26,8 +28,7 @@ export class RemoveTagHandler extends Handler<'removeTag'> {
     return {
       tags: tags.map((tag) => ({
         tagId: tag.tag_id,
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        tagName: tag.tag!.name
+        tagName: tag.tag.name
       }))
     }
   }

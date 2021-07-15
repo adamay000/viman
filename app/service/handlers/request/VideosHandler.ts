@@ -3,9 +3,7 @@ import { VideoItem } from '@/service/models/VideoItem'
 
 export class VideosHandler extends Handler<'videos'> {
   public async request() {
-    const videos = (await VideoItem.query().withGraphFetched('item')) as Array<
-      VideoItem & Pick<Required<VideoItem>, 'item'>
-    >
+    const videos = (await VideoItem.query().withGraphFetched('item')) as Array<WithRelation<VideoItem, 'item'>>
 
     return {
       videos: videos
