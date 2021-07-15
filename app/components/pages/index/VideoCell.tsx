@@ -4,6 +4,7 @@ import { ipc } from '@/ipc/renderer'
 import { RequestError } from '@/ipc/RequestError'
 import { TagInput, TagInputHandle } from '@/components/pages/index/TagInput'
 import { Thumbnail } from '@/components/pages/index/Thumbnail'
+import { noop } from '@/utilities/noop'
 import styles from '@/components/pages/index/VideoCell.module.sass'
 
 interface VideoCellProps {
@@ -22,8 +23,16 @@ function useManageTags(itemId: number, clearInput: () => void) {
   const [isUpdatingTag, setIsUpdatingTag] = useState(false)
 
   useEffect(() => {
-    // TODO Request tag list
-  }, [])
+    const req = ipc.request('getTags', { itemId })
+    req
+      .then((response) => {
+        setTags(response.tags)
+      })
+      .catch(noop)
+    return () => {
+      req.cancel()
+    }
+  }, [itemId])
 
   const addTag = useCallback(
     async (tagName: string) => {

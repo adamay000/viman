@@ -9,6 +9,7 @@ import { NewWindowHandler } from '@/service/handlers/NewWindowHandler'
 import { ConsoleHistoryHandler } from '@/service/handlers/request/ConsoleHistoryHandler'
 import { ItemsHandler } from '@/service/handlers/request/ItemsHandler'
 import { VideosHandler } from '@/service/handlers/request/VideosHandler'
+import { GetTagsHandler } from '@/service/handlers/request/GetTagsHandler'
 import { AddTagHandler } from '@/service/handlers/request/AddTagHandler'
 import { RemoveTagHandler } from '@/service/handlers/request/RemoveTagHandler'
 
@@ -20,6 +21,7 @@ export function initializeHandler() {
   addRequestHandler('consoleHistory', new ConsoleHistoryHandler())
   addRequestHandler('items', new ItemsHandler())
   addRequestHandler('videos', new VideosHandler())
+  addRequestHandler('getTags', new GetTagsHandler())
   addRequestHandler('addTag', new AddTagHandler())
   addRequestHandler('removeTag', new RemoveTagHandler())
 }

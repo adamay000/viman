@@ -70,6 +70,17 @@ export type RequestChannel = RequestEnvelope<{
       }>
     }
   }
+  getTags: {
+    request: {
+      itemId: number
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
   addTag: {
     request: {
       itemId: number
