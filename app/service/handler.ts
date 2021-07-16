@@ -48,6 +48,7 @@ function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: 
 
 function addRequestHandler<T extends keyof RequestChannel>(channel: T, handler: Handler<T>) {
   ipc.on(channel, async (event, requestId, payload) => {
+    const startTime = Date.now()
     try {
       const response = await handler.request(
         {
@@ -76,6 +77,9 @@ function addRequestHandler<T extends keyof RequestChannel>(channel: T, handler: 
           detail: null
         })
       )
+    } finally {
+      const elapsed = Date.now() - startTime
+      console.log(`Request(id: ${requestId}) for ${channel} is done in ${elapsed}ms.`)
     }
   })
 }
