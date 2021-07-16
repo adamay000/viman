@@ -13,7 +13,7 @@ import { Item } from '@/service/models/Item'
 import { VideoItem } from '@/service/models/VideoItem'
 import { Processor } from '@/service/processors/Processor'
 import { ipc } from '@/ipc/main'
-import { PATH_VIDEO_THUMBNAIL } from '@/paths'
+import { PATH_VIDEO_THUMBNAIL } from '@/service/paths'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/constants'
 
 if (isDev) {

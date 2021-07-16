@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import Knex, { Sqlite3ConnectionConfig } from 'knex'
 import { Model } from 'objection'
-import { PATH_SQLITE } from '@/paths'
+import { PATH_SQLITE } from '@/service/paths'
 
 const sqliteConfig: Sqlite3ConnectionConfig = {
   filename: PATH_SQLITE

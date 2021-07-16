@@ -7,7 +7,7 @@ import { promisify } from 'util'
 import remove from 'lodash/remove'
 import urljoin from 'url-join'
 import { Item } from '@/service/models/Item'
-import { PATH_VIDEO_THUMBNAIL } from '@/paths'
+import { PATH_VIDEO_THUMBNAIL } from '@/service/paths'
 
 export class App {
   private static readonly instances: Array<App> = []
