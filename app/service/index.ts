@@ -3,11 +3,12 @@ import isDev from 'electron-is-dev'
 import windowStateKeeper from 'electron-window-state'
 import { resolve } from 'path'
 import { access } from 'fs'
+import { URLSearchParams } from 'url'
 import { promisify } from 'util'
 import remove from 'lodash/remove'
 import urljoin from 'url-join'
 import { Item } from '@/service/models/Item'
-import { PATH_VIDEO_THUMBNAIL } from '@/service/paths'
+import { PATH_DATA, PATH_VIDEO_THUMBNAIL } from '@/service/paths'
 
 export class App {
   private static readonly instances: Array<App> = []
@@ -41,7 +42,10 @@ export class App {
       })
     }
 
-    const url = isDev ? 'http://localhost:3000' : urljoin('file://', __dirname, '../index.html')
+    const file = isDev ? 'http://localhost:3000' : urljoin('file://', __dirname, '../index.html')
+    const searchParams = new URLSearchParams()
+    searchParams.append('dataPath', PATH_DATA)
+    const url = `${file}?${searchParams}`
     this.window.loadURL(url).catch(() => {
       this.window.close()
     })
