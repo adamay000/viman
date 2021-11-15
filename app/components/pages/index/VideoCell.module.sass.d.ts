@@ -4,5 +4,12 @@
 const styles: {
   readonly cVideoCell: string
   readonly details: string
+  readonly title: string
+  readonly tags: string
+  readonly input: string
+  readonly tagButton: string
+  readonly button: string
+  readonly remove: string
+  readonly edit: string
 }
 export default styles

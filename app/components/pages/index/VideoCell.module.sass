@@ -7,4 +7,37 @@
     right: 0
     bottom: 0
     left: 0
-    background: rgba(#000000, 0.5)
+    background: rgba($color-primary-background, 0.5)
+  & > .details > .title
+    padding: 4px 8px
+    background: rgba($color-primary-background, 0.5)
+    border-bottom: 1px solid $color-primary-border
+    font-size: $text-small
+    color: $color-primary-text
+  & > .details > .tags
+    background: rgba($color-primary-background, 0.2)
+  & > .details > .input
+    margin-top: 2px
+    padding: 0 4px
+.tag-button
+  display: inline-block
+  & > .button
+    display: inline-block
+    cursor: pointer
+    padding: 4px
+    font-size: $text-small
+    text-decoration: underline
+    color: $color-primary-text
+    transition: all 60ms ease-in-out
+  &.-remove > .button
+    color: $color-remove
+  &.-edit > .button
+    margin-left: 8px
+    padding: 4px
+    border: 1px solid rgba($color-primary-text, 0.8)
+    vertical-align: middle
+    font-size: $text-min
+    text-decoration: none
+    opacity: 0.8
+  & > .button:hover
+    background: $color-tertiary-background

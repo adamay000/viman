@@ -91,6 +91,10 @@ export type RequestChannel = RequestEnvelope<{
         tagId: number
         tagName: string
       }>
+      suggestions: Array<{
+        tagId: number
+        tagName: string
+      }>
     }
   }
   removeTag: {
@@ -112,7 +116,12 @@ export type RequestChannel = RequestEnvelope<{
       limit?: number
     }
     response: {
-      tags: Array<{
+      relatedTags: Array<{
+        tagId: number
+        tagName: string
+        count: number
+      }>
+      mostUsedTags: Array<{
         tagId: number
         tagName: string
         count: number

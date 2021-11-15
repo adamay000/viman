@@ -1,5 +1,8 @@
 import { shell } from 'electron'
+import { basename } from 'path'
 import { FunctionComponent, memo, useCallback, useEffect, useRef, useState } from 'react'
+import Link from 'next/link'
+import classnames from 'classnames'
 import { ipc } from '@/ipc/renderer'
 import { RequestError } from '@/ipc/RequestError'
 import { TagInput, TagInputHandle } from '@/components/pages/index/TagInput'
@@ -91,6 +94,7 @@ function useManageTags(itemId: number, clearInput: () => void) {
 export const VideoCell: FunctionComponent<VideoCellProps> = memo(
   ({ id, path, width, height, timestamps, duration, autospeed, seek }) => {
     const [isShowDetail, setIsShowDetail] = useState(false)
+    const [isEditing, setIsEditing] = useState(false)
 
     const tagInputRef = useRef<TagInputHandle>(null)
 
@@ -100,27 +104,50 @@ export const VideoCell: FunctionComponent<VideoCellProps> = memo(
     )
 
     const openApplication = useCallback(() => !isShowDetail && shell.openItem(path), [path, isShowDetail])
-    const showDetail = useCallback(() => setIsShowDetail(true), [])
-    const hideDetail = useCallback(() => setIsShowDetail(false), [])
-
-    useEffect(() => {
-      tagInputRef.current?.focus()
+    const toggleDetail = useCallback(() => {
+      if (!isShowDetail) {
+        setIsEditing(false)
+      }
+      setIsShowDetail(!isShowDetail)
     }, [isShowDetail])
 
     return (
-      <div className={styles.cVideoCell} onClick={openApplication} onContextMenu={showDetail}>
+      <div className={styles.cVideoCell} onClick={openApplication} onContextMenu={toggleDetail}>
         {isShowDetail && (
           <div className={styles.details}>
-            <TagInput ref={tagInputRef} itemId={id} onSubmit={addTag} disabled={isUpdatingTag} />
-            <div>
+            <div className={styles.title}>{basename(path)}</div>
+            <ul className={styles.tags}>
               {tags.map((tag) => (
-                <div key={tag.tagId}>
-                  {tag.tagName}
-                  <button onClick={async () => removeTag(tag.tagId)}>消す</button>
-                </div>
+                <li key={tag.tagId} className={classnames(styles.tagButton, { [styles.remove]: isEditing })}>
+                  {isEditing ? (
+                    <button className={styles.button} onClick={async () => removeTag(tag.tagId)}>
+                      {tag.tagName}
+                    </button>
+                  ) : (
+                    <Link href={`/tags?id=${tag.tagId}`}>
+                      <a className={styles.button}>{tag.tagName}</a>
+                    </Link>
+                  )}
+                </li>
               ))}
+              {tags.length > 0 && (
+                <li className={classnames(styles.tagButton, styles.edit)}>
+                  <button className={styles.button} onClick={() => setIsEditing(!isEditing)}>
+                    {isEditing ? '完了' : '編集'}
+                  </button>
+                </li>
+              )}
+            </ul>
+            <div className={styles.input}>
+              <TagInput
+                ref={tagInputRef}
+                itemId={id}
+                tags={tags.map(({ tagName }) => tagName)}
+                onSubmit={addTag}
+                disabled={isUpdatingTag}
+                width="40%"
+              />
             </div>
-            <button onClick={hideDetail}>閉じる</button>
           </div>
         )}
         <Thumbnail

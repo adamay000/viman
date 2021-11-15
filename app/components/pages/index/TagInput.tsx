@@ -9,10 +9,22 @@ import {
   KeyboardEvent,
   ChangeEvent
 } from 'react'
-import { useComponentId } from '@/hooks/useComponentId'
+import classnames from 'classnames'
 import { CancellableRequest, ipc } from '@/ipc/renderer'
 import { noop } from '@/utilities/noop'
 import styles from '@/components/pages/index/TagInput.module.sass'
+
+enum TagPriority {
+  Recommended,
+  Related,
+  MostUsed
+}
+
+interface TagSuggestion {
+  tagName: string
+  count: number
+  priority: TagPriority
+}
 
 export interface TagInputHandle {
   focus(): void
@@ -21,8 +33,10 @@ export interface TagInputHandle {
 
 interface TagInputProps {
   itemId: number
+  tags: Array<string>
   onSubmit: (tagName: string) => void
   disabled?: boolean
+  width?: string
 }
 
 function useRequestTagSuggestions() {
@@ -34,21 +48,38 @@ function useRequestTagSuggestions() {
     }
   }, [])
 
-  return async (itemId: number, tagName: string) => {
+  return async (itemId: number, tagName: string): Promise<Array<TagSuggestion>> => {
     req.current?.cancel()
     req.current = ipc.request('tagSuggestions', { itemId, tagName })
     try {
-      const response = await req.current
-      return response.tags.map(({ tagName, count }) => ({ tagName, count }))
+      const { relatedTags, mostUsedTags } = await req.current
+      const relatedTagIds = relatedTags.map(({ tagId }) => tagId)
+      const mostUsedTagIds = mostUsedTags.map(({ tagId }) => tagId)
+      const recommendedTagIds = relatedTagIds.filter((tagId) => mostUsedTagIds.includes(tagId))
+      console.log('relatedTagIds', relatedTagIds)
+      console.log('mostUsedTagIds', mostUsedTagIds)
+      console.log('recommendedTagIds', recommendedTagIds)
+      return [
+        ...relatedTags
+          .filter(({ tagId }) => recommendedTagIds.includes(tagId))
+          .map(({ tagName, count }) => ({ tagName, count, priority: TagPriority.Recommended })),
+        ...relatedTags
+          .filter(({ tagId }) => !recommendedTagIds.includes(tagId))
+          .map(({ tagName, count }) => ({ tagName, count, priority: TagPriority.Related })),
+        ...mostUsedTags
+          .filter(({ tagId }) => !recommendedTagIds.includes(tagId))
+          .map(({ tagName, count }) => ({ tagName, count, priority: TagPriority.MostUsed }))
+      ]
     } catch (exception) {
+      console.error(exception)
       return []
       // do nothing
     }
   }
 }
 
-function useTagSuggestions(itemId: number) {
-  const [tagSuggestions, setTagSuggestions] = useState<Array<{ tagName: string; count: number }>>([])
+function useTagSuggestions(itemId: number, tags: Array<string>) {
+  const [tagSuggestions, setTagSuggestions] = useState<Array<TagSuggestion>>([])
   const requestTagSuggestions = useRequestTagSuggestions()
   const updateTagSuggestions = useCallback(
     async (tagName: string) => {
@@ -60,7 +91,7 @@ function useTagSuggestions(itemId: number) {
 
   useEffect(() => {
     updateTagSuggestions('').catch(noop)
-  }, [])
+  }, [tags.length])
 
   return {
     tagSuggestions,
@@ -69,66 +100,86 @@ function useTagSuggestions(itemId: number) {
 }
 
 export const TagInput = memo(
-  forwardRef<TagInputHandle, TagInputProps>(({ itemId, onSubmit, disabled = false }, forwardedRef) => {
-    const [tagName, setTagName] = useState('')
-    const [isComposing, setIsComposing] = useState(false)
-    const componentId = useComponentId((id) => `tag-input-${id}`)
-    const { tagSuggestions, updateTagSuggestions } = useTagSuggestions(itemId)
+  forwardRef<TagInputHandle, TagInputProps>(
+    ({ itemId, tags, onSubmit, disabled = false, width = '100%' }, forwardedRef) => {
+      const [tagName, setTagName] = useState('')
+      const [isComposing, setIsComposing] = useState(false)
+      const [isFocused, setIsFocused] = useState(false)
+      const { tagSuggestions, updateTagSuggestions } = useTagSuggestions(itemId, tags)
 
-    const inputRef = useRef<HTMLInputElement>(null)
-    useImperativeHandle(
-      forwardedRef,
-      () => {
-        return {
-          focus() {
-            inputRef.current?.focus()
-          },
-          clear() {
-            setTagName('')
+      const inputRef = useRef<HTMLInputElement>(null)
+      useImperativeHandle(
+        forwardedRef,
+        () => {
+          return {
+            focus() {
+              inputRef.current?.focus()
+            },
+            clear() {
+              setTagName('')
+            }
           }
-        }
-      },
-      []
-    )
+        },
+        []
+      )
 
-    const onType = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-      const typedTagName = e.target.value
-      setTagName(typedTagName)
+      const onType = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
+        const typedTagName = e.target.value
+        setTagName(typedTagName)
 
-      await updateTagSuggestions(typedTagName)
-    }, [])
+        await updateTagSuggestions(typedTagName)
+      }, [])
 
-    const detectEnter = useCallback(
-      (e: KeyboardEvent<HTMLInputElement>) => {
-        if (!isComposing && e.code === 'Enter' && tagName) {
-          onSubmit(tagName)
-        }
-      },
-      [tagName, isComposing, onSubmit]
-    )
+      const detectEnter = useCallback(
+        (e: KeyboardEvent<HTMLInputElement>) => {
+          if (!isComposing && e.code === 'Enter' && tagName) {
+            onSubmit(tagName)
+          }
+        },
+        [tagName, isComposing, onSubmit]
+      )
 
-    return (
-      <div className={styles.cTagInput}>
-        <input
-          ref={inputRef}
-          className={styles.input}
-          type="text"
-          list={componentId}
-          value={tagName}
-          onChange={onType}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={() => setIsComposing(false)}
-          onKeyDown={detectEnter}
-          disabled={disabled}
-        />
-        <datalist id={componentId}>
-          {tagSuggestions.map(({ tagName, count }) => (
-            <option key={tagName} label={`(${count})`} value={tagName} />
-          ))}
-        </datalist>
-      </div>
-    )
-  })
+      // Focus input after adding/removing tags
+      useEffect(() => {
+        inputRef.current?.focus()
+      }, [tags.length, tagSuggestions.length])
+
+      return (
+        <div className={styles.cTagInput}>
+          <input
+            ref={inputRef}
+            className={styles.input}
+            style={{ width }}
+            type="text"
+            placeholder="Tag"
+            value={tagName}
+            onChange={onType}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onKeyDown={detectEnter}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            disabled={disabled}
+          />
+          {isFocused && tagSuggestions.length > 0 && (
+            <div className={styles.suggestions}>
+              {tagSuggestions.map(({ tagName, count, priority }) => (
+                <button
+                  key={tagName}
+                  className={classnames(styles.suggestion, {
+                    [styles.recommended]: priority === TagPriority.Recommended
+                  })}
+                  onMouseDown={() => onSubmit(tagName)}
+                >
+                  {tagName} ({count})
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    }
+  )
 )
 
 TagInput.displayName = 'TagInput'

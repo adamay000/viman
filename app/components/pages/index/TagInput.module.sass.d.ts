@@ -4,5 +4,8 @@
 const styles: {
   readonly cTagInput: string
   readonly input: string
+  readonly suggestions: string
+  readonly suggestion: string
+  readonly recommended: string
 }
 export default styles
