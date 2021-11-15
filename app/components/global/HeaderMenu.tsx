@@ -18,6 +18,10 @@ const links: Array<{ title: string; href: string }> = [
   {
     title: 'All files',
     href: '/files'
+  },
+  {
+    title: 'Tags',
+    href: '/tags'
   }
 ]
 

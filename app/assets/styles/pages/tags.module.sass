@@ -1,0 +1,23 @@
+.content-wrapper
+  display: flex
+  flex-direction: column
+  height: 100%
+  & > .tags
+    padding: 16px
+.tag-list
+  display: flex
+  flex-wrap: wrap
+  & > .tag
+    margin-right: 16px
+  & > .tag:last-child
+    margin-right: 0
+  & > .tag > .link
+    display: block
+    cursor: pointer
+    padding: 4px
+    font-size: $text-max
+    text-decoration: underline
+    color: $color-primary-text
+    transition: all 60ms ease-in-out
+  & > .tag > .link:hover
+    background: $color-tertiary-background
