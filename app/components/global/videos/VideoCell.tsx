@@ -124,7 +124,7 @@ export const VideoCell: FunctionComponent<VideoCellProps> = memo(
                       {tag.tagName}
                     </button>
                   ) : (
-                    <Link href={`/tag?id=${tag.tagId}`}>
+                    <Link href={{ pathname: '/tag', query: { id: tag.tagId } }}>
                       <a className={styles.button}>{tag.tagName}</a>
                     </Link>
                   )}

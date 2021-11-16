@@ -50,14 +50,14 @@ const Tags: NextPage = memo(() => {
         <ul className={styles.tagList}>
           {!filter && (
             <li className={styles.tag}>
-              <Link href="/tag?tag=-1">
+              <Link href={{ pathname: '/tag', query: { id: -1 } }}>
                 <a className={styles.link}>タグなし</a>
               </Link>
             </li>
           )}
           {filteredTags.map((tag) => (
             <li key={tag.tagId} className={styles.tag}>
-              <Link href={`/tag?id=${tag.tagId}`}>
+              <Link href={{ pathname: '/tag', query: { id: tag.tagId } }}>
                 <a className={styles.link}>
                   {tag.tagName} ({tag.count})
                 </a>
