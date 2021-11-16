@@ -4,5 +4,6 @@
 const styles: {
   readonly contentWrapper: string
   readonly title: string
+  readonly reload: string
 }
 export default styles

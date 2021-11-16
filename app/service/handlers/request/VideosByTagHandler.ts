@@ -33,6 +33,13 @@ export class VideosByTagHandler extends Handler<'videosByTag'> {
     isAnd: boolean,
     tagIds: Array<number>
   ): Promise<Array<WithRelation<VideoItem, 'item'>>> {
+    // Returns no tagged videos
+    if (tagIds.length === 1 && tagIds[0] === -1) {
+      return (await VideoItem.query()
+        .whereNotIn('item_id', ItemTag.query().select('item_id').groupBy('item_id'))
+        .withGraphFetched('item')) as Array<WithRelation<VideoItem, 'item'>>
+    }
+
     if (!isAnd) {
       return (await VideoItem.query()
         .whereIn('item_id', ItemTag.query().select('item_id').whereIn('tag_id', tagIds))

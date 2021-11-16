@@ -10,7 +10,8 @@ import styles from '@/assets/styles/pages/tag.module.sass'
 
 function useRequestVideos(
   logic: RequestChannel['videosByTag']['request']['logic'],
-  tagIds: RequestChannel['videosByTag']['request']['tagIds']
+  tagIds: RequestChannel['videosByTag']['request']['tagIds'],
+  reloadFlag: boolean
 ) {
   const [videos, setVideos] = useState<RequestChannel['videosByTag']['response']['videos']>([])
   const [tags, setTags] = useState<RequestChannel['videosByTag']['response']['tags']>([])
@@ -31,7 +32,7 @@ function useRequestVideos(
     return () => {
       req.cancel()
     }
-  }, [logic, tagIds.join(',')])
+  }, [logic, tagIds.join(','), reloadFlag])
 
   return { videos, tags }
 }
@@ -40,6 +41,7 @@ const Tag: NextPage = memo(() => {
   const router = useRouter()
 
   const [tagId, setTagId] = useState(-1)
+  const [reloadFlag, setReloadFlag] = useState(false)
 
   useEffect(() => {
     const id = Number.parseInt(`${router.query.id}`, 10)
@@ -48,7 +50,7 @@ const Tag: NextPage = memo(() => {
     }
   }, [router.query.id])
 
-  const { videos, tags } = useRequestVideos('and', [tagId])
+  const { videos, tags } = useRequestVideos('and', [tagId], reloadFlag)
 
   return (
     <article className={styles.contentWrapper}>
@@ -56,7 +58,11 @@ const Tag: NextPage = memo(() => {
         <title>Tag({tags.map(({ tagName }) => tagName).join(', ')})</title>
       </Head>
 
-      <h1 className={styles.title}>{tags.map(({ tagName }) => tagName).join(', ')}</h1>
+      <h1 className={styles.title}>{tagId === -1 ? 'タグなし' : tags.map(({ tagName }) => tagName).join(', ')}</h1>
+
+      <button className={styles.reload} onClick={() => setReloadFlag(!reloadFlag)}>
+        更新
+      </button>
 
       <VideoList videos={videos} />
     </article>
