@@ -1,15 +1,8 @@
 const { join } = require('path')
-const { PHASE_PRODUCTION_BUILD } = require('next/constants')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = (phase, { defaultConfig }) => {
   const config = defaultConfig
-
-  // Avoid absolute path because electron accesses html file via file:// protocol in production.
-  const isBuild = phase === PHASE_PRODUCTION_BUILD
-  if (isBuild) {
-    config.assetPrefix = '.'
-  }
 
   config.distDir = '../.next'
 
