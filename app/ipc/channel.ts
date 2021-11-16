@@ -70,6 +70,25 @@ export type RequestChannel = RequestEnvelope<{
       }>
     }
   }
+  videosByTag: {
+    request: {
+      tagIds: Array<number>
+      logic: 'and' | 'or'
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+      videos: Array<{
+        id: number
+        path: string
+        size: number
+        duration: number
+        thumbnailTimestamps: Array<number>
+      }>
+    }
+  }
   getAllTags: {
     request: void
     response: {
