@@ -12,7 +12,7 @@ import {
 import classnames from 'classnames'
 import { CancellableRequest, ipc } from '@/ipc/renderer'
 import { noop } from '@/utilities/noop'
-import styles from '@/components/pages/index/TagInput.module.sass'
+import styles from '@/components/global/videos/TagInput.module.sass'
 
 enum TagPriority {
   Recommended,

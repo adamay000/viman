@@ -1,51 +1,28 @@
-import { FunctionComponent, memo, useEffect, useState, useMemo } from 'react'
+import { FunctionComponent, memo, useCallback, useMemo, useState } from 'react'
 import { AutoSizer, Grid, GridCellRenderer } from 'react-virtualized'
-import { RequestChannel } from '@/ipc/channel'
-import { CancellableRequest, ipc } from '@/ipc/renderer'
-import { VideoCell } from '@/components/pages/index/VideoCell'
+import { VideoCell } from '@/components/global/videos/VideoCell'
 import { THUMBNAIL_HEIGHT, THUMBNAIL_WIDTH } from '@/constants'
-import { noop } from '@/utilities/noop'
-import styles from '@/components/pages/index/VideoList.module.sass'
+import styles from '@/components/global/videos/VideoList.module.sass'
 
 interface VideoListProps {
-  column: number
-  filter: string
-  autospeed: number
-  seek: boolean
+  videos: Array<{
+    id: number
+    path: string
+    size: number
+    duration: number
+    thumbnailTimestamps: Array<number>
+  }>
 }
 
-function useRequestVideos() {
-  const [videos, setVideos] = useState<RequestChannel['videos']['response']['videos']>([])
+export const VideoList: FunctionComponent<VideoListProps> = memo(({ videos }) => {
+  const [column, setColumn] = useState(4)
+  const [filter, setFilter] = useState('')
+  const [autospeed, setAutospeed] = useState(500)
+  const [seek, setSeek] = useState(true)
 
-  useEffect(() => {
-    let req: CancellableRequest<'videos'> | null = null
-    const request = async () => {
-      req = ipc.request('videos')
-      try {
-        const response = await req
-        if (videos.length !== response.videos.length) {
-          setVideos(response.videos)
-        }
-      } catch (exception) {
-        // do nothing
-      }
-    }
-    const interval = setInterval(request, 5000)
-    request().catch(noop)
-    return () => {
-      clearInterval(interval)
-      req?.cancel()
-    }
-  }, [])
-
-  return { videos }
-}
-
-export const VideoList: FunctionComponent<VideoListProps> = memo(({ column, filter, autospeed, seek }) => {
-  const { videos } = useRequestVideos()
   const filteredVideos = useMemo(
     () => videos.filter((video) => !filter || new RegExp(filter, 'i').test(video.path)),
-    [videos.length, filter]
+    [videos.map(({ id }) => id).join(','), filter]
   )
 
   const $videoGrid = (
@@ -92,10 +69,39 @@ export const VideoList: FunctionComponent<VideoListProps> = memo(({ column, filt
   )
 
   return (
-    <div className={styles.cVideoList}>
-      <div className={styles.info}>Count: {filteredVideos.length}</div>
-      <div className={styles.videos}>{$videoGrid}</div>
-    </div>
+    <section className={styles.cVideoList}>
+      <header className={styles.videosettings}>
+        Size:
+        <input
+          type="range"
+          min={1}
+          max={10}
+          value={column}
+          onChange={useCallback((e) => setColumn(Number(e.target.value)), [])}
+        />
+        Speed:
+        <input
+          type="range"
+          min={50}
+          max={1000}
+          value={autospeed}
+          onChange={useCallback((e) => setAutospeed(Number(e.target.value)), [])}
+        />
+        Seek:
+        <input
+          type="checkbox"
+          defaultChecked={seek}
+          onClick={useCallback(() => setSeek((prevSeek) => !prevSeek), [])}
+        />
+        Filter:
+        <input type="text" value={filter} onInput={useCallback((e) => setFilter(e.target.value), [])} />
+      </header>
+
+      <div className={styles.videos}>
+        <div className={styles.info}>Count: {filteredVideos.length}</div>
+        <div className={styles.videogrid}>{$videoGrid}</div>
+      </div>
+    </section>
   )
 })
 

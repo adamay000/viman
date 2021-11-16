@@ -5,10 +5,10 @@ import Link from 'next/link'
 import classnames from 'classnames'
 import { ipc } from '@/ipc/renderer'
 import { RequestError } from '@/ipc/RequestError'
-import { TagInput, TagInputHandle } from '@/components/pages/index/TagInput'
-import { Thumbnail } from '@/components/pages/index/Thumbnail'
+import { TagInput, TagInputHandle } from '@/components/global/videos/TagInput'
+import { Thumbnail } from '@/components/global/videos/Thumbnail'
 import { noop } from '@/utilities/noop'
-import styles from '@/components/pages/index/VideoCell.module.sass'
+import styles from '@/components/global/videos/VideoCell.module.sass'
 
 interface VideoCellProps {
   id: number

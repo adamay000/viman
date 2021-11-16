@@ -3,7 +3,9 @@
 //   because next tries to handle generated .d.ts files as page.
 const styles: {
   readonly cVideoList: string
-  readonly info: string
+  readonly videosettings: string
   readonly videos: string
+  readonly info: string
+  readonly videogrid: string
 }
 export default styles
