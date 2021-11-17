@@ -3,5 +3,9 @@
 //   because next tries to handle generated .d.ts files as page.
 const styles: {
   readonly contentWrapper: string
+  readonly tags: string
+  readonly tagList: string
+  readonly tag: string
+  readonly link: string
 }
 export default styles

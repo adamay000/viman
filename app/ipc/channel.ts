@@ -62,11 +62,98 @@ export type RequestChannel = RequestEnvelope<{
     request: void
     response: {
       videos: Array<{
-        id: string
+        id: number
         path: string
         size: number
         duration: number
         thumbnailTimestamps: Array<number>
+      }>
+    }
+  }
+  videosByTag: {
+    request: {
+      tagIds: Array<number>
+      logic: 'and' | 'or'
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+      videos: Array<{
+        id: number
+        path: string
+        size: number
+        duration: number
+        thumbnailTimestamps: Array<number>
+      }>
+    }
+  }
+  getAllTags: {
+    request: void
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+        count: number
+      }>
+    }
+  }
+  getTags: {
+    request: {
+      itemId: number
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
+  addTag: {
+    request: {
+      itemId: number
+      tagName: string
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+      suggestions: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
+  removeTag: {
+    request: {
+      itemId: number
+      tagId: number
+    }
+    response: {
+      tags: Array<{
+        tagId: number
+        tagName: string
+      }>
+    }
+  }
+  tagSuggestions: {
+    request: {
+      itemId: number
+      tagName: string
+      limit?: number
+    }
+    response: {
+      relatedTags: Array<{
+        tagId: number
+        tagName: string
+        count: number
+      }>
+      mostUsedTags: Array<{
+        tagId: number
+        tagName: string
+        count: number
       }>
     }
   }

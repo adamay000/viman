@@ -1,0 +1,36 @@
+.c-tag-input
+  position: relative
+  & > .input
+    width: 100%
+    padding: 4px 8px
+    background: $color-input-background
+    border: 1px solid $color-input-border
+    border-radius: 8px
+    font-size: $text-base
+    color: $color-input-text
+  & > .suggestions
+    position: absolute
+    top: 100%
+    right: 0
+    left: 0
+    padding-top: 2px
+  & > .suggestions > .suggestion
+    display: inline-block
+    cursor: pointer
+    margin-right: 4px
+    margin-bottom: 2px
+    padding: 4px 8px
+    background: $color-secondary-background
+    border: 1px solid $color-secondary-border
+    border-radius: 8px
+    color: $color-primary-text
+    transition: all 60ms ease-in-out
+  & > .suggestions > :last-child(.suggestion)
+    margin-right: 0
+  & > .suggestions > .suggestion.-recommended
+    background: $color-primary-background
+    border: 1px solid $color-primary-border
+    color: $color-primary-text
+  & > .suggestions > .suggestion:hover
+    background: $color-tertiary-background
+    color: $color-tertiary-text

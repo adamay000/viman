@@ -1,7 +1,7 @@
-import { ipcMain, IpcMainEvent } from 'electron'
+import { ipcMain, IpcMainEvent, WebContents } from 'electron'
 import { MainToRendererChannel, RendererToMainChannel, RequestChannel, RequestId } from '@/ipc/channel'
+import { RequestError } from '@/ipc/RequestError'
 import { App } from '@/service'
-import WebContents = Electron.WebContents
 
 // Wrap ipcMain to achieve type-safe connection
 export const ipc = {
@@ -20,6 +20,18 @@ export const ipc = {
     payload: RequestChannel[T]['response']
   ) {
     sender.send(channel, requestId, payload)
+  },
+  respondError<T extends keyof RequestChannel>(
+    sender: WebContents,
+    channel: T,
+    requestId: RequestId,
+    error: RequestError.Errors
+  ) {
+    sender.send(channel, requestId, {
+      code: error.code,
+      message: error.message,
+      detail: error.detail
+    })
   },
   on<T extends keyof RendererToMainChannel | keyof RequestChannel>(
     channel: T,

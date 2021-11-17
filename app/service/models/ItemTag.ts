@@ -1,15 +1,17 @@
 import { JSONSchema, Model } from 'objection'
 import { Item } from '@/service/models/Item'
+import { Tag } from '@/service/models/Tag'
 
-export class VideoItem extends Model {
+export class ItemTag extends Model {
+  public readonly id!: number
   public readonly item_id!: number
-  public readonly duration!: number
-  public readonly thumbnail_timestamps!: string
+  public readonly tag_id!: number
 
+  public readonly tag?: Tag
   public readonly item?: Item
 
   public static override get tableName() {
-    return 'video_items'
+    return 'item_tags'
   }
 
   public static override get relationMappings() {
@@ -18,8 +20,16 @@ export class VideoItem extends Model {
         relation: Model.BelongsToOneRelation,
         modelClass: Item,
         join: {
-          from: `${VideoItem.tableName}.item_id`,
+          from: `${ItemTag.tableName}.item_id`,
           to: `${Item.tableName}.id`
+        }
+      },
+      tag: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: Tag,
+        join: {
+          from: `${ItemTag.tableName}.tag_id`,
+          to: `${Tag.tableName}.id`
         }
       }
     }
@@ -28,17 +38,15 @@ export class VideoItem extends Model {
   public static override get jsonSchema(): JSONSchema {
     return {
       type: 'object',
-      required: ['item_id', 'duration', 'thumbnail_timestamps'],
+      required: ['item_id', 'tag_id'],
       properties: {
         item_id: {
           type: 'number',
           minimum: 0
         },
-        duration: {
-          type: 'number'
-        },
-        thumbnail_timestamps: {
-          type: 'string'
+        tag_id: {
+          type: 'number',
+          minimum: 0
         }
       }
     }

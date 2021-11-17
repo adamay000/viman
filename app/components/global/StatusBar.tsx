@@ -1,6 +1,6 @@
 import { FunctionComponent, memo, useEffect, useState } from 'react'
 import { ipc, Listener } from '@/ipc/renderer'
-import styles from '@/components/StatusBar.module.sass'
+import styles from '@/components/global/StatusBar.module.sass'
 
 function useListenStatus() {
   const [status, setStatus] = useState('')

@@ -2,6 +2,14 @@
 // Note that you shouldn't place css files in pages directory,
 //   because next tries to handle generated .d.ts files as page.
 const styles: {
-  readonly contentWrapper: string
+  readonly cVideoCell: string
+  readonly details: string
+  readonly title: string
+  readonly tags: string
+  readonly input: string
+  readonly tagButton: string
+  readonly button: string
+  readonly remove: string
+  readonly edit: string
 }
 export default styles

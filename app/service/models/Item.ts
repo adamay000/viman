@@ -1,5 +1,4 @@
 import { JSONSchema, Model } from 'objection'
-import { basename } from 'path'
 import { Inject, inject } from '@/service/injection'
 import { Queue } from '@/utilities/queue'
 
@@ -10,7 +9,7 @@ export enum ItemStatus {
 }
 
 export class Item extends Model {
-  public readonly id!: string
+  public readonly id!: number
   public readonly path!: string
   public readonly filename!: string
   public readonly extension!: string
@@ -37,38 +36,41 @@ export class Item extends Model {
   public static override get jsonSchema(): JSONSchema {
     return {
       type: 'object',
-      required: ['id', 'path', 'filename', 'extension', 'size'],
+      required: ['path', 'filename', 'extension', 'size'],
       properties: {
-        id: {
-          type: 'string'
-        },
         path: {
-          type: 'string'
+          type: 'string',
+          minLength: 1,
+          maxLength: 2048
         },
         filename: {
-          type: 'string'
+          type: 'string',
+          minLength: 1,
+          maxLength: 2048
         },
         extension: {
-          type: 'string'
+          type: 'string',
+          minLength: 1,
+          maxLength: 2048
         },
         size: {
-          type: 'integer'
+          type: 'integer',
+          minimum: 0
         },
         status: {
           type: 'string',
           enum: Object.values(ItemStatus)
         },
         error: {
-          type: ['string', 'null']
+          type: ['string', 'null'],
+          maxLength: 2048
         },
         external_table: {
-          type: ['string', 'null']
+          type: ['string', 'null'],
+          minLength: 1,
+          maxLength: 64
         }
       }
     }
-  }
-
-  public static generateId(path: string, size: number) {
-    return `${size}-${basename(path)}`
   }
 }

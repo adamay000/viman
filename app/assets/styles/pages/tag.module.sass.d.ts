@@ -2,8 +2,8 @@
 // Note that you shouldn't place css files in pages directory,
 //   because next tries to handle generated .d.ts files as page.
 const styles: {
-  readonly cVideoList: string
-  readonly info: string
-  readonly videos: string
+  readonly contentWrapper: string
+  readonly title: string
+  readonly reload: string
 }
 export default styles

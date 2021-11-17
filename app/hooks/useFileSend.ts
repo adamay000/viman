@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { ipc } from '@/ipc/renderer'
-import { useDropZone } from '@/effects/useDropZone'
+import { useDropZone } from '@/hooks/useDropZone'
 
 function sendFilePathsToMainProcess(files: FileList) {
   const paths = Array.from<File>(files)

@@ -1,3 +1,5 @@
+*
+  box-sizing: border-box
 body
   background: $color-primary-background
   line-height: 1
@@ -30,3 +32,8 @@ textarea
   color: $color-selection-text
 ul
   list-style: none
+
+// Overriding library styles
+// stylelint-disable-next-line
+:global(.ReactVirtualized__Grid)
+  outline: none

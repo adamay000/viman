@@ -1,6 +1,7 @@
 import { IpcRenderer, IpcRendererEvent } from 'electron'
 import isElectron from 'is-electron'
 import { MainToRendererChannel, RendererToMainChannel, RequestChannel, RequestId } from '@/ipc/channel'
+import { RequestError } from '@/ipc/RequestError'
 import { noop } from '@/utilities/noop'
 
 // Avoid to load electron on browser because it causes module error by accessing to fs
@@ -22,8 +23,8 @@ const listeners = new Map<Listener<keyof MainToRendererChannel>, Parameters<IpcR
 let requestId = 0
 
 export class CancellableRequest<T extends keyof RequestChannel> extends Promise<RequestChannel[T]['response']> {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  cancel() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  public cancel(_message?: string) {}
 }
 
 // Wrap ipcRenderer to achieve type-safe connection
@@ -59,7 +60,15 @@ export const ipc = {
       resolve = _resolve
       reject = _reject
     }) as CancellableRequest<T>
-    promise.cancel = reject
+    promise.cancel = (message = '') => {
+      reject(
+        RequestError.createError({
+          code: RequestError.Code.Cancel,
+          message,
+          detail: null
+        })
+      )
+    }
 
     requestId += 1
     const id = requestId
@@ -67,11 +76,18 @@ export const ipc = {
     ipcRenderer.send(channel, id, payload)
 
     const listener = (_event: IpcRendererEvent, requestId: RequestId, payload: RequestChannel[T]['response']) => {
-      if (requestId === id) {
-        ipcRenderer.removeListener(channel, listener)
-
-        resolve(payload)
+      if (requestId !== id) {
+        return
       }
+
+      ipcRenderer.removeListener(channel, listener)
+
+      if (RequestError.isRequestError(payload)) {
+        reject(RequestError.createError(payload))
+        return
+      }
+
+      resolve(payload)
     }
 
     promise.catch(() => {

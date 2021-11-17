@@ -2,7 +2,7 @@ import { basename } from 'path'
 import { FunctionComponent, Fragment, memo, useEffect, useState, useMemo, useCallback, MouseEvent } from 'react'
 import { toTime } from '@/utilities/time'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/constants'
-import styles from '@/components/Thumbnail.module.sass'
+import styles from '@/components/global/videos/Thumbnail.module.sass'
 
 interface ThumbnailProps {
   path: string

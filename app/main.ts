@@ -1,7 +1,7 @@
 import { app } from 'electron'
 import { Inject, provide } from '@/service/injection'
 import { App } from '@/service'
-import { initializeDirectories } from '@/paths'
+import { initializeDirectories } from '@/service/paths'
 import { initializeDatabase } from '@/service/database'
 import { initializeHandler } from '@/service/handler'
 import { Processing } from '@/service/processing'
