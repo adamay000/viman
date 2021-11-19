@@ -4,6 +4,8 @@ import { memo, useEffect, useState } from 'react'
 import { VideoList } from '@/components/global/videos/VideoList'
 import { RequestChannel } from '@/ipc/channel'
 import { CancellableRequest, ipc } from '@/ipc/renderer'
+import { useGlobalState } from '@/store'
+import { Header } from '@/components/global/Header'
 import { noop } from '@/utilities/noop'
 import styles from '@/assets/styles/pages/index.module.sass'
 
@@ -37,13 +39,21 @@ function useRequestVideos() {
 const Home: NextPage = memo(() => {
   const { videos } = useRequestVideos()
 
+  const [filter, setFilter] = useGlobalState('filter')
+
   return (
     <article className={styles.contentWrapper}>
       <Head>
         <title>Home</title>
       </Head>
 
-      <VideoList videos={videos} />
+      <div className={styles.header}>
+        <Header videoControls filter={filter} setFilter={setFilter} />
+      </div>
+
+      <div className={styles.videos}>
+        <VideoList videos={videos} />
+      </div>
     </article>
   )
 })

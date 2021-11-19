@@ -14,6 +14,7 @@ module.exports = (phase, { defaultConfig }) => {
     prependData: `
       @import 'variables/size.sass'
       @import 'variables/color.sass'
+      @import 'components/input.sass'
     `
   }
   config.webpack = webpackConfig()

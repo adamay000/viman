@@ -1,0 +1,12 @@
+.c-video-controls
+  display: flex
+  align-items: center
+  & > .item + .item
+    margin-left: 16px
+  & > .item > .title
+    display: inline-block
+    margin-right: 8px
+    font-size: $text-small
+    color: $color-secondary-text
+  & > .item > .range
+    @extend %input-range-dark

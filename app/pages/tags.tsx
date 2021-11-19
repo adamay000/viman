@@ -1,9 +1,10 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
-import { memo, useState, useEffect, useCallback, useMemo } from 'react'
+import { memo, useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { RequestChannel } from '@/ipc/channel'
 import { ipc } from '@/ipc/renderer'
+import { Header } from '@/components/global/Header'
 import { noop } from '@/utilities/noop'
 import styles from '@/assets/styles/pages/tags.module.sass'
 
@@ -41,10 +42,9 @@ const Tags: NextPage = memo(() => {
         <title>Tags</title>
       </Head>
 
-      <header>
-        Filter:
-        <input type="text" value={filter} onInput={useCallback((e) => setFilter(e.target.value), [])} />
-      </header>
+      <div className={styles.header}>
+        <Header filter={filter} setFilter={setFilter} />
+      </div>
 
       <section className={styles.tags}>
         <ul className={styles.tagList}>

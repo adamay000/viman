@@ -2,9 +2,11 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { memo, useEffect, useState } from 'react'
-import { VideoList } from '@/components/global/videos/VideoList'
+import { useGlobalState } from '@/store'
 import { ipc } from '@/ipc/renderer'
 import { RequestChannel } from '@/ipc/channel'
+import { Header } from '@/components/global/Header'
+import { VideoList } from '@/components/global/videos/VideoList'
 import { noop } from '@/utilities/noop'
 import styles from '@/assets/styles/pages/tag.module.sass'
 
@@ -40,6 +42,8 @@ function useRequestVideos(
 const Tag: NextPage = memo(() => {
   const router = useRouter()
 
+  const [filter, setFilter] = useGlobalState('filter')
+
   const [tagId, setTagId] = useState(-1)
   const [reloadFlag, setReloadFlag] = useState(false)
 
@@ -58,13 +62,24 @@ const Tag: NextPage = memo(() => {
         <title>Tag({tags.map(({ tagName }) => tagName).join(', ')})</title>
       </Head>
 
-      <h1 className={styles.title}>{tagId === -1 ? 'タグなし' : tags.map(({ tagName }) => tagName).join(', ')}</h1>
+      <div className={styles.header}>
+        <Header videoControls filter={filter} setFilter={setFilter}>
+          <div className={styles.pageHeader}>
+            <h1 className={styles.title}>
+              {tagId === -1 ? 'タグなし' : tags.map(({ tagName }) => tagName).join(', ')}
+            </h1>
+            {(tagId === -1 || tags.length > 0) && (
+              <button className={styles.reload} onClick={() => setReloadFlag(!reloadFlag)}>
+                更新
+              </button>
+            )}
+          </div>
+        </Header>
+      </div>
 
-      <button className={styles.reload} onClick={() => setReloadFlag(!reloadFlag)}>
-        更新
-      </button>
-
-      <VideoList videos={videos} />
+      <div className={styles.videos}>
+        <VideoList videos={videos} />
+      </div>
     </article>
   )
 })
