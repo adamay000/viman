@@ -17,7 +17,7 @@ export const VideoControls: FunctionComponent = memo(() => {
           min={VIDEO_COLUMN_MIN}
           max={VIDEO_COLUMN_MAX}
           value={column}
-          onChange={useCallback((e) => setColumn(Number(e.target.value)), [])}
+          onChange={useCallback((e) => setColumn(Number(e.currentTarget.value)), [])}
         />
       </div>
       <div className={styles.item}>
@@ -28,7 +28,7 @@ export const VideoControls: FunctionComponent = memo(() => {
           min={VIDEO_AUTOSPEED_MIN}
           max={VIDEO_AUTOSPEED_MAX}
           value={speed}
-          onChange={useCallback((e) => setSpeed(Number(e.target.value)), [])}
+          onChange={useCallback((e) => setSpeed(Number(e.currentTarget.value)), [])}
         />
       </div>
     </div>

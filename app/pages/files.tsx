@@ -15,7 +15,7 @@ const Files: NextPage = memo(() => {
 
       <header className={styles.filesettings}>
         Filter:
-        <input type="text" value={filter} onInput={useCallback((e) => setFilter(e.target.value), [])} />
+        <input type="text" value={filter} onInput={useCallback((e) => setFilter(e.currentTarget.value), [])} />
       </header>
 
       <section className={styles.files}>

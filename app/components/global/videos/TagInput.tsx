@@ -124,7 +124,7 @@ export const TagInput = memo(
       )
 
       const onType = useCallback(async (e: ChangeEvent<HTMLInputElement>) => {
-        const typedTagName = e.target.value
+        const typedTagName = e.currentTarget.value
         setTagName(typedTagName)
 
         await updateTagSuggestions(typedTagName)
