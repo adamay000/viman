@@ -7,6 +7,6 @@ const styles: {
   readonly videos: string
   readonly pageHeader: string
   readonly title: string
-  readonly reload: string
+  readonly button: string
 }
 export default styles

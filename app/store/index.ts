@@ -5,8 +5,6 @@ export const useGlobalState = initializeStore<{
   column: number
   autospeed: number
   filter: string
-  tagIds: Array<number>
-  tagLogic: 'and' | 'or'
 }>({
   column: {
     value: 4,
@@ -18,12 +16,5 @@ export const useGlobalState = initializeStore<{
   },
   filter: {
     value: ''
-  },
-  tagIds: {
-    value: []
-  },
-  tagLogic: {
-    value: 'and',
-    validate: (value) => value === 'and' || value === 'or'
   }
 })

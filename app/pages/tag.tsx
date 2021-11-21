@@ -1,7 +1,8 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { memo, useEffect, useState } from 'react'
+import { memo, useEffect, useState, useMemo } from 'react'
 import { useGlobalState } from '@/store'
 import { ipc } from '@/ipc/renderer'
 import { RequestChannel } from '@/ipc/channel'
@@ -43,18 +44,19 @@ const Tag: NextPage = memo(() => {
   const router = useRouter()
 
   const [filter, setFilter] = useGlobalState('filter')
-
-  const [tagId, setTagId] = useState(-1)
+  const [tagLogic, setTagLogic] = useState('and' as RequestChannel['videosByTag']['request']['logic'])
   const [reloadFlag, setReloadFlag] = useState(false)
 
-  useEffect(() => {
-    const id = Number.parseInt(`${router.query.id}`, 10)
-    if (!Number.isNaN(id)) {
-      setTagId(id)
-    }
-  }, [router.query.id])
+  const tagIds = useMemo(
+    () =>
+      ([] as Array<string>)
+        .concat(router.query.id ?? '')
+        .map((value) => Number.parseInt(value, 10))
+        .filter((value) => !Number.isNaN(value)),
+    [router.query.id]
+  )
 
-  const { videos, tags } = useRequestVideos('and', [tagId], reloadFlag)
+  const { videos, tags } = useRequestVideos(tagLogic, tagIds, reloadFlag)
 
   return (
     <article className={styles.contentWrapper}>
@@ -66,10 +68,20 @@ const Tag: NextPage = memo(() => {
         <Header videoControls filter={filter} setFilter={setFilter}>
           <div className={styles.pageHeader}>
             <h1 className={styles.title}>
-              {tagId === -1 ? 'タグなし' : tags.map(({ tagName }) => tagName).join(', ')}
+              {tagIds.length === 0 ? 'タグなし' : tags.map(({ tagName }) => tagName).join(', ')}
             </h1>
-            {(tagId === -1 || tags.length > 0) && (
-              <button className={styles.reload} onClick={() => setReloadFlag(!reloadFlag)}>
+            {tags.length > 0 && tagIds.length > 0 && (
+              <Link href={{ pathname: '/tags', query: { id: tagIds } }}>
+                <a className={styles.button}>追加</a>
+              </Link>
+            )}
+            {tags.length > 0 && tagIds.length > 1 && (
+              <button className={styles.button} onClick={() => setTagLogic(tagLogic === 'and' ? 'or' : 'and')}>
+                {tagLogic}
+              </button>
+            )}
+            {tags.length > 0 && (
+              <button className={styles.button} onClick={() => setReloadFlag(!reloadFlag)}>
                 更新
               </button>
             )}

@@ -34,7 +34,7 @@ export class VideosByTagHandler extends Handler<'videosByTag'> {
     tagIds: Array<number>
   ): Promise<Array<WithRelation<VideoItem, 'item'>>> {
     // Returns no tagged videos
-    if (tagIds.length === 1 && tagIds[0] === -1) {
+    if (tagIds.length === 0) {
       return (await VideoItem.query()
         .whereNotIn('item_id', ItemTag.query().select('item_id').groupBy('item_id'))
         .withGraphFetched('item')) as Array<WithRelation<VideoItem, 'item'>>

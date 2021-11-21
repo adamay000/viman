@@ -13,7 +13,7 @@
   & > .title
     padding: 8px 16px
     font-size: $text-max
-  & > .reload
+  & > .button
     display: inline-block
     cursor: pointer
     padding: 4px
@@ -21,6 +21,9 @@
     vertical-align: text-bottom
     font-size: $text-min
     text-decoration: none
+    color: inherit
     opacity: 0.8
-  & > .reload:hover
+  & > .button:hover
     background: $color-tertiary-background
+  & > .button + .button
+    margin-left: 8px
