@@ -7,6 +7,7 @@ import { FilesHandler } from '@/service/handlers/FilesHandler'
 import { ForegroundHandler } from '@/service/handlers/ForegroundHandler'
 import { NewWindowHandler } from '@/service/handlers/NewWindowHandler'
 import { ConsoleHistoryHandler } from '@/service/handlers/request/ConsoleHistoryHandler'
+import { SelectDirectoryHandler } from '@/service/handlers/request/SelectDirectoryHandler'
 import { ItemsHandler } from '@/service/handlers/request/ItemsHandler'
 import { VideosHandler } from '@/service/handlers/request/VideosHandler'
 import { VideosByTagHandler } from '@/service/handlers/request/VideosByTagHandler'
@@ -22,6 +23,7 @@ export function initializeHandler() {
   addHandler('newWindow', new NewWindowHandler())
 
   addRequestHandler('consoleHistory', new ConsoleHistoryHandler())
+  addRequestHandler('selectDirectory', new SelectDirectoryHandler())
   addRequestHandler('items', new ItemsHandler())
   addRequestHandler('videos', new VideosHandler())
   addRequestHandler('videosByTag', new VideosByTagHandler())

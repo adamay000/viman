@@ -46,6 +46,12 @@ export type RequestChannel = RequestEnvelope<{
       history: Array<HistoryObject>
     }
   }
+  selectDirectory: {
+    request: void
+    response: {
+      path: string | null
+    }
+  }
   items: {
     request: void
     response: {
