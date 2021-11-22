@@ -1,5 +1,7 @@
+import { UniqueViolationError } from 'objection'
 import { Handler, HandlerContext } from '@/service/handlers/Handler'
 import { RequestChannel } from '@/ipc/channel'
+import { RequestError } from '@/ipc/RequestError'
 import { Tag } from '@/service/models/Tag'
 import { ItemTag } from '@/service/models/ItemTag'
 import { handleCommonErrors } from '@/service/handlers/error'
@@ -22,6 +24,17 @@ export class AddTagHandler extends Handler<'addTag'> {
 
       return { tag, itemTag, tags }
     }).catch((exception) => {
+      if (exception instanceof UniqueViolationError) {
+        throw RequestError.createError({
+          code: RequestError.Code.TagConstraint,
+          message: exception.message,
+          detail: {
+            table: exception.table,
+            columns: exception.columns
+          }
+        })
+      }
+
       handleCommonErrors(exception)
       throw exception
     })

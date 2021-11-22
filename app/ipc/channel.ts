@@ -163,4 +163,29 @@ export type RequestChannel = RequestEnvelope<{
       }>
     }
   }
+  getWatchDirectories: {
+    request: void
+    response: {
+      watchDirectories: Array<{
+        id: number
+        path: string
+        recursive: boolean
+      }>
+    }
+  }
+  addWatchDirectory: {
+    request: {
+      path: string
+      recursive: boolean
+    }
+    response: {
+      id: number
+    }
+  }
+  removeWatchDirectory: {
+    request: {
+      id: number
+    }
+    response: Record<string, never>
+  }
 }>

@@ -3,7 +3,9 @@ import { ErrorHash } from 'objection'
 export namespace RequestError {
   export enum Code {
     Validation = 'validation',
+    AccessDenied = 'access-denied',
     TagConstraint = 'tag-constraint',
+    PathConstraint = 'path-constraint',
 
     Unknown = 'unknown',
     Cancel = 'cancel'
@@ -16,8 +18,21 @@ export namespace RequestError {
   }
 
   export type Validation = TypedError<Code.Validation, ErrorHash>
+  export type AccessDenied = TypedError<
+    Code.AccessDenied,
+    {
+      path: string
+    }
+  >
   export type TagConstraint = TypedError<
     Code.TagConstraint,
+    {
+      table: string
+      columns: Array<string>
+    }
+  >
+  export type PathConstraint = TypedError<
+    Code.PathConstraint,
     {
       table: string
       columns: Array<string>
@@ -26,7 +41,7 @@ export namespace RequestError {
   export type Unknown = TypedError<Code.Unknown, null>
   export type Cancel = TypedError<Code.Cancel, null>
 
-  export type Errors = Validation | TagConstraint | Unknown | Cancel
+  export type Errors = Validation | AccessDenied | TagConstraint | PathConstraint | Unknown | Cancel
 
   export function createError(error: Errors): Error & Errors {
     const createdError = new Error(error.message) as Error & Errors

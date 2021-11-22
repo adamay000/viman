@@ -1,5 +1,4 @@
 import { RequestError } from '@/ipc/RequestError'
-import { UniqueViolationError } from 'db-errors'
 import { ValidationError } from 'objection'
 
 export function handleCommonErrors(exception: Error) {
@@ -8,17 +7,6 @@ export function handleCommonErrors(exception: Error) {
       code: RequestError.Code.Validation,
       message: exception.message,
       detail: exception.data
-    })
-  }
-
-  if (exception instanceof UniqueViolationError) {
-    throw RequestError.createError({
-      code: RequestError.Code.TagConstraint,
-      message: exception.message,
-      detail: {
-        table: exception.table,
-        columns: exception.columns
-      }
     })
   }
 }

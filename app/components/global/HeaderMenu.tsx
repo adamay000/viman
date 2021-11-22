@@ -22,6 +22,10 @@ const links: Array<{ title: string; href: string }> = [
   {
     title: 'Tags',
     href: '/tags'
+  },
+  {
+    title: 'Directory',
+    href: '/directory'
   }
 ]
 

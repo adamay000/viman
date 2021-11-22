@@ -16,6 +16,9 @@ import { GetTagsHandler } from '@/service/handlers/request/GetTagsHandler'
 import { AddTagHandler } from '@/service/handlers/request/AddTagHandler'
 import { RemoveTagHandler } from '@/service/handlers/request/RemoveTagHandler'
 import { TagSuggestionsHandler } from '@/service/handlers/request/TagSuggestionsHandler'
+import { GetWatchDirectoriesHandler } from '@/service/handlers/request/GetWatchDirectoriesHandler'
+import { AddWatchDirectoryHandler } from '@/service/handlers/request/AddWatchDirectoryHandler'
+import { RemoveWatchDirectoryHandler } from '@/service/handlers/request/RemoveWatchDirectoryHandler'
 
 export function initializeHandler() {
   addHandler('files', new FilesHandler())
@@ -32,6 +35,9 @@ export function initializeHandler() {
   addRequestHandler('addTag', new AddTagHandler())
   addRequestHandler('removeTag', new RemoveTagHandler())
   addRequestHandler('tagSuggestions', new TagSuggestionsHandler())
+  addRequestHandler('getWatchDirectories', new GetWatchDirectoriesHandler())
+  addRequestHandler('addWatchDirectory', new AddWatchDirectoryHandler())
+  addRequestHandler('removeWatchDirectory', new RemoveWatchDirectoryHandler())
 }
 
 function addHandler<T extends keyof RendererToMainChannel>(channel: T, handler: Handler<T>) {
