@@ -1,9 +1,11 @@
-import { access } from 'fs'
+import { access as _access } from 'fs'
 import { promisify } from 'util'
 import { Inject, inject } from '@/service/injection'
 import { Queue } from '@/utilities/queue'
 import { Item, ItemStatus } from '@/service/models/Item'
 import { Processor, ProcessorStatic } from '@/service/processors/Processor'
+
+const access = promisify(_access)
 
 class ProcessError extends Error {
   public static create(message: string) {
@@ -84,7 +86,7 @@ export class Processing {
   }
 
   private async process(item: Item) {
-    await promisify(access)(item.path).catch(ProcessError.create(`File not found (${item.path})`))
+    await access(item.path).catch(ProcessError.create(`File not found (${item.path})`))
     const processor = this.processors[item.extension]
     if (!processor) throw new Error(`No processor was found for extension '${item.extension}'`)
 

@@ -2,13 +2,15 @@ import { BrowserWindow, WebContents, protocol } from 'electron'
 import isDev from 'electron-is-dev'
 import windowStateKeeper from 'electron-window-state'
 import { resolve, join } from 'path'
-import { access } from 'fs'
+import { access as _access } from 'fs'
 import { URLSearchParams } from 'url'
 import { promisify } from 'util'
 import remove from 'lodash/remove'
 import urljoin from 'url-join'
 import { Item } from '@/service/models/Item'
 import { PATH_DATA, PATH_VIDEO_THUMBNAIL } from '@/service/paths'
+
+const access = promisify(_access)
 
 export class App {
   private static readonly instances: Array<App> = []
@@ -80,7 +82,7 @@ export class App {
 
       const path = resolve(PATH_VIDEO_THUMBNAIL, `${id}.png`)
       try {
-        await promisify(access)(path)
+        await access(path)
         callback({
           path: resolve(PATH_VIDEO_THUMBNAIL, `${id}.png`)
         })

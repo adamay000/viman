@@ -1,8 +1,8 @@
 import { resolve } from 'path'
-import { readdir } from 'fs'
+import { readdir as _readdir } from 'fs'
 import { promisify } from 'util'
 import mkdirp from 'mkdirp'
-import rimraf from 'rimraf'
+import _rimraf from 'rimraf'
 import urljoin from 'url-join'
 import ffmpeg, { FfprobeData } from 'fluent-ffmpeg'
 import ffmpegStatic from 'ffmpeg-static'
@@ -15,6 +15,10 @@ import { Processor } from '@/service/processors/Processor'
 import { ipc } from '@/ipc/main'
 import { PATH_VIDEO_THUMBNAIL } from '@/service/paths'
 import { THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT } from '@/constants'
+
+const readdir = promisify(_readdir)
+const rimraf = promisify(_rimraf)
+const ffprobe = promisify(ffmpeg.ffprobe)
 
 if (isDev) {
   ffmpeg.setFfmpegPath(ffmpegStatic)
@@ -146,7 +150,7 @@ export class VideoProcessor extends Processor {
     id: number,
     startTime: number
   ) {
-    const files = (await promisify(readdir)(temporallyDir))
+    const files = (await readdir(temporallyDir))
       .filter((file) => /\.png$/i.test(file))
       .sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
       .map((file) => resolve(temporallyDir, file))
@@ -171,14 +175,14 @@ export class VideoProcessor extends Processor {
   }
 
   private async deleteTemporallyThumbnails(temporallyDir: string) {
-    await promisify(rimraf)(temporallyDir)
+    await rimraf(temporallyDir)
   }
 }
 
 async function getMetadata(path: string): Promise<{ duration: number; width: number; height: number }> {
   let ffprobeData: FfprobeData
   try {
-    ffprobeData = (await promisify(ffmpeg.ffprobe).call(ffmpeg, path)) as FfprobeData
+    ffprobeData = (await ffprobe.call(ffmpeg, path)) as FfprobeData
   } catch (exception) {
     console.error(exception)
     throw exception
