@@ -73,6 +73,7 @@
     "ffmpeg-static": "^3.0.0",
     "ffprobe-static": "^3.0.0",
     "fluent-ffmpeg": "^2.1.2",
+    "glob": "^7.2.0",
     "is-electron": "^2.2.0",
     "jimp": "^0.16.1",
     "knex": "^0.21.19",
