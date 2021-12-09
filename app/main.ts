@@ -15,12 +15,13 @@ async function main() {
 
   const queue = new Queue<Item>((a, b) => a.id === b.id)
   provide(Inject.Queue, queue)
+  const processing = new Processing()
+  provide(Inject.Processing, processing)
 
   await initializeDirectories()
   await initializeDatabase()
   initializeHandler()
 
-  const processing = new Processing()
   processing.addProcessor(VideoProcessor)
   await processing.loadQueue()
 

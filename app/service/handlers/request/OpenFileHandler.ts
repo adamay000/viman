@@ -3,6 +3,8 @@ import { stat as _stat } from 'fs'
 import { promisify } from 'util'
 import { basename, join } from 'path'
 import _glob from 'glob'
+import { Inject, inject } from '@/service/injection'
+import { Processing } from '@/service/processing'
 import { Handler, HandlerContext } from '@/service/handlers/Handler'
 import { RequestChannel } from '@/ipc/channel'
 import { Item } from '@/service/models/Item'
@@ -12,6 +14,9 @@ const stat = promisify(_stat)
 const glob = promisify(_glob)
 
 export class OpenFileHandler extends Handler<'openFile'> {
+  @inject(Inject.Processing)
+  private readonly processing!: Processing
+
   private fileCache: Array<string> = []
 
   public async request(_context: HandlerContext, payload: RequestChannel['openFile']['request']) {
@@ -56,17 +61,22 @@ export class OpenFileHandler extends Handler<'openFile'> {
 
     const startTime = Date.now()
 
-    const files = await Promise.all(
+    const extensions = this.processing.getExtensions()
+    const filename = `*{${extensions.join(',')}}`
+    const filesPerDirectory = await Promise.all(
       watchDirectories.map(async ({ path, recursive }) => {
         // Note that glob cannot access network volume on Windows without cwd option
-        return (await glob(recursive ? `**/*` : '*', { cwd: path })).map((filename) => join(path, filename))
+        return (await glob(recursive ? `**/${filename}` : filename, { cwd: path })).map((filename) =>
+          join(path, filename)
+        )
       })
     )
+    const files = ([] as Array<string>).concat(...filesPerDirectory)
 
     console.log(`Time taken for glob: ${Date.now() - startTime}ms`)
     console.log(`Number of target files: ${files.length}`)
 
-    return ([] as Array<string>).concat(...files)
+    return files
   }
 
   private async updateFilePath(

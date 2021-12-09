@@ -1,9 +1,11 @@
 export enum Inject {
-  Queue = 'queue'
+  Queue = 'queue',
+  Processing = 'processing'
 }
 
 const values: Record<Inject, unknown | null> = {
-  [Inject.Queue]: null
+  [Inject.Queue]: null,
+  [Inject.Processing]: null
 }
 
 export const inject =

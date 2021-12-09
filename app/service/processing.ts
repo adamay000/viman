@@ -40,6 +40,10 @@ export class Processing {
     this.queue.on('add', this.next.bind(this))
   }
 
+  public getExtensions() {
+    return Object.keys(this.processors)
+  }
+
   public addProcessor(processorClass: ProcessorStatic) {
     const processor = new processorClass()
     for (const extension of processorClass.extensions) {
