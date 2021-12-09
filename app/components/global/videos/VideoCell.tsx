@@ -1,4 +1,3 @@
-import { shell } from 'electron'
 import { basename } from 'path'
 import { FunctionComponent, memo, useCallback, useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
@@ -91,6 +90,38 @@ function useManageTags(itemId: number, clearInput: () => void) {
   }
 }
 
+function useOpenApplication(id: number, isShowDetail: boolean) {
+  const req = useRef<ReturnType<typeof ipc.request> | null>(null)
+  const [isOpening, setIsRequesting] = useState(false)
+
+  useEffect(
+    () => () => {
+      req.current?.cancel()
+    },
+    []
+  )
+
+  const openApplication = useCallback(async () => {
+    if (isShowDetail || isOpening) {
+      return
+    }
+    setIsRequesting(true)
+    try {
+      req.current = ipc.request('openFile', { id })
+      await req.current
+    } catch (exception) {
+      // TODO show alert
+    } finally {
+      setIsRequesting(false)
+    }
+  }, [id, isShowDetail, isOpening])
+
+  return {
+    isOpening,
+    openApplication
+  }
+}
+
 export const VideoCell: FunctionComponent<VideoCellProps> = memo(
   ({ id, path, width, height, timestamps, duration, autospeed, seek }) => {
     const [isShowDetail, setIsShowDetail] = useState(false)
@@ -103,7 +134,8 @@ export const VideoCell: FunctionComponent<VideoCellProps> = memo(
       useCallback(() => tagInputRef.current?.clear(), [])
     )
 
-    const openApplication = useCallback(() => !isShowDetail && shell.openItem(path), [path, isShowDetail])
+    const { isOpening, openApplication } = useOpenApplication(id, isShowDetail)
+
     const toggleDetail = useCallback(() => {
       if (!isShowDetail) {
         setIsEditing(false)
@@ -113,6 +145,7 @@ export const VideoCell: FunctionComponent<VideoCellProps> = memo(
 
     return (
       <div className={styles.cVideoCell} onClick={openApplication} onContextMenu={toggleDetail}>
+        {isOpening && <div className={styles.status}>Opening ...</div>}
         {isShowDetail && (
           <div className={styles.details}>
             <div className={styles.title}>{basename(path)}</div>

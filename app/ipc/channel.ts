@@ -52,6 +52,15 @@ export type RequestChannel = RequestEnvelope<{
       path: string | null
     }
   }
+  openFile: {
+    request: {
+      id: number
+    }
+    response: {
+      path: string | null
+      updated: boolean
+    }
+  }
   items: {
     request: void
     response: {

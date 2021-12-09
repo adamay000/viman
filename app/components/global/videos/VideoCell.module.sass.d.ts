@@ -3,6 +3,7 @@
 //   because next tries to handle generated .d.ts files as page.
 const styles: {
   readonly cVideoCell: string
+  readonly status: string
   readonly details: string
   readonly title: string
   readonly tags: string

@@ -1,8 +1,18 @@
 .c-video-cell
   position: relative
-  & > .details
+  & > .status
     position: absolute
     z-index: 2
+    top: 8px
+    right: 8px
+    padding: 2px 4px
+    background: rgba($color-primary-background, 0.5)
+    border: 1px solid $color-primary-border
+    font-size: $text-small
+    color: $color-primary-text
+  & > .details
+    position: absolute
+    z-index: 3
     top: 0
     right: 0
     bottom: 0
