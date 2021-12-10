@@ -1,6 +1,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { memo, useState, useEffect, useCallback } from 'react'
+import { useGlobalState } from '@/store'
 import { RequestChannel } from '@/ipc/channel'
 import { ipc } from '@/ipc/renderer'
 import { RequestError } from '@/ipc/RequestError'
@@ -29,12 +30,41 @@ function useRequestWatchDirectories(reloadCount: number) {
   return { watchDirectories }
 }
 
+function useImportFiles() {
+  const [isAddingFilesFromWatchedDirectory, setIsAddingFilesFromWatchedDirectory] = useGlobalState(
+    'isAddingFilesFromWatchedDirectory'
+  )
+  const importFiles = useCallback(async () => {
+    if (isAddingFilesFromWatchedDirectory) {
+      return
+    }
+
+    const req = ipc.request('filesFromWatchedDirectory')
+    setIsAddingFilesFromWatchedDirectory(true)
+
+    try {
+      await req
+    } catch (exception) {
+      console.error(exception)
+    }
+
+    setIsAddingFilesFromWatchedDirectory(false)
+  }, [isAddingFilesFromWatchedDirectory])
+
+  return {
+    isImporting: isAddingFilesFromWatchedDirectory,
+    importFiles
+  }
+}
+
 const WatchDirectory: NextPage = memo(() => {
   const [updateCount, setUpdateCount] = useState(0)
   const { watchDirectories } = useRequestWatchDirectories(updateCount)
 
   const [selectedDirectory, setSelectedDirectory] = useState('')
   const [recursive, setRecursive] = useState(true)
+
+  const { isImporting, importFiles } = useImportFiles()
 
   const openDirectorySelector = useCallback(async () => {
     const { path } = await ipc.request('selectDirectory')
@@ -87,6 +117,10 @@ const WatchDirectory: NextPage = memo(() => {
 
       <section>
         <div>
+          <button onClick={importFiles} disabled={isImporting}>
+            Import files from watched directory
+          </button>
+          <hr />
           <button onClick={openDirectorySelector}>select directory</button>
           {selectedDirectory}
         </div>

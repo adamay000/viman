@@ -5,6 +5,7 @@ export const useGlobalState = initializeStore<{
   column: number
   autospeed: number
   filter: string
+  isAddingFilesFromWatchedDirectory: boolean
 }>({
   column: {
     value: 4,
@@ -16,5 +17,8 @@ export const useGlobalState = initializeStore<{
   },
   filter: {
     value: ''
+  },
+  isAddingFilesFromWatchedDirectory: {
+    value: false
   }
 })

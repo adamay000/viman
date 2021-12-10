@@ -61,6 +61,12 @@ export type RequestChannel = RequestEnvelope<{
       updated: boolean
     }
   }
+  filesFromWatchedDirectory: {
+    request: void
+    response: {
+      addedItems: Array<string>
+    }
+  }
   items: {
     request: void
     response: {
